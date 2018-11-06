@@ -1,6 +1,8 @@
 const express= require('express');
 const path = require('path');
 const app = express();
+const bodyParser = require('body-parser');
+const urlencodedParser = bodyParser.urlencoded({ extended: false});
 
 let config = "";
 const isProd = process.env.DATABASE_URL != null;
@@ -19,6 +21,11 @@ const pool = new Pool({
 })
 
 app.use(express.static('./dist/herokuSimpleApp'));
+// configure the app to use bodyParser()
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+app.use(bodyParser.json());
 
 app
 	.get('/', (req,res) => {
@@ -35,6 +42,28 @@ app
       console.error(err);
       res.send("Error " + err);
     }
+  });
+
+app
+  .post('/api/student/add', async (req, res) => {
+    const body = req.body;
+    const query = {
+      text: 'INSERT INTO students( firstname, surname, age ) VALUES ($1, $2, $3)',
+      values: [body.firstname, body.surname, body.age],
+    }
+
+    const client = await pool.connect();
+    client
+      .query(query)
+      .then(result => {
+        res.status(200).json(result.rows[0]);
+        client.release();
+      })
+      .catch(err => {
+        console.log(err);
+        res.status(400).json({ error: "Error" })
+      });
+
   });
 
 app.listen(process.env.PORT || 8080, ()=>{

@@ -15,4 +15,8 @@ export class StudentService {
   getStudents() {
     return this.http.get(`${this.baseUrl}/get`);
   }
+
+  saveStudent(studentData) {
+    return this.http.post(`${this.baseUrl}/add`, studentData);
+  }
 }

@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { StudentComponent } from './students/student/student.component';
@@ -23,7 +24,9 @@ import { CreateStudentComponent } from './students/create-student.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [
     StudentService,
@@ -37,7 +40,6 @@ import { CreateStudentComponent } from './students/create-student.component';
 export class AppModule { }
 
 export function checkDirtyState(component: CreateStudentComponent) {
-  debugger
   if (component.isDirty) {
     return window.confirm('Nie zapisałeś studenta :(, nie opuszczaj stronki :)');
   }
